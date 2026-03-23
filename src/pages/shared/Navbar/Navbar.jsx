@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ShopLogo from "../../../assets/shopLogo.png";
+import shopLogo from "../../../assets/shopLogo.jpg";
 
 const Navbar = () => {
     const navOptions = (
@@ -40,7 +40,7 @@ const Navbar = () => {
 
                 {/* LOGO */}
                 <Link to='/'>
-                    <img src={ShopLogo} alt="Shop Logo" className="w-[60px]  rounded-full border-2 border-yellow-500"
+                    <img src={shopLogo} alt="Shop Logo" className="w-[60px]  rounded-xl border-2 border-yellow-500"
                     />
                 </Link>
             </div>

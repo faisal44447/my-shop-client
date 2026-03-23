@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-import ShopLogo from "../../assets/shopLogo.png";
+import ShopLogo from "../../assets/shopLogo.jpg";
 
 const Footer = () => {
     return (
         <div className="m-5 mt-10  bg-base-200">
-            <footer className="border rounded-xl mx-auto bg-glass footer footer-center p-10">
+            <footer className="border rounded-5xl mx-auto bg-glass footer footer-center p-10">
                 <aside>
                     {/* Logo Image instead of SVG */}
                     <Link to='/'>
-                        <img src={ShopLogo} alt="Shop Logo" className="w-[100px]  rounded-full border-2 border-yellow-500"
+                        <img src={ShopLogo} alt="Shop Logo" className="w-[150px]  rounded-xl border-2 border-yellow-500"
                         />
                     </Link>
                     <p className="font-bold">
