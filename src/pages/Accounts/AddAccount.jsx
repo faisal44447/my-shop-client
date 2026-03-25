@@ -7,13 +7,18 @@ const AddAccount = () => {
         e.preventDefault();
         const form = e.target;
 
+        // function: text + number handle
+        const getValue = (value) => {
+            return isNaN(value) || value === "" ? value : parseFloat(value);
+        };
+
         const data = {
             date: form.date.value,
-            expense: parseFloat(form.expense.value),
-            income: parseFloat(form.income.value),
-            loan: parseFloat(form.loan.value),
-            cash: parseFloat(form.cash.value),
-            stock: parseFloat(form.stock.value),
+            expense: getValue(form.expense.value),
+            income: getValue(form.income.value),
+            loan: getValue(form.loan.value),
+            cash: getValue(form.cash.value),
+            stock: getValue(form.stock.value),
         };
 
         axiosSecure.post("/accounts", data).then(() => {
@@ -24,17 +29,57 @@ const AddAccount = () => {
 
     return (
         <div>
-            <h2 className="text-2xl mb-4">Add Account</h2>
+            <h2 className="text-4xl text-center font-bold my-5">
+                Add Account
+            </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-2">
-                <input name="date" type="date" required />
-                <input name="expense" type="number" placeholder="Expense" />
-                <input name="income" type="number" placeholder="Income" />
-                <input name="loan" type="number" placeholder="Loan" />
-                <input name="cash" type="number" placeholder="Cash" />
-                <input name="stock" type="number" placeholder="Stock" />
+            <form
+                onSubmit={handleSubmit}
+                className="space-y-3 grid grid-cols-1 border-4 border-black rounded-lg shadow-lg p-5 mx-auto w-1/2"
+            >
+                <input
+                    className="input input-bordered text-center"
+                    name="date"
+                    type="datetime-local"
+                    required
+                />
 
-                <button className="bg-green-500 px-3 text-white">
+                <input
+                    className="input input-bordered text-center"
+                    name="expense"
+                    type="text"
+                    placeholder="Expense - খরচ"
+                />
+
+                <input
+                    className="input input-bordered text-center"
+                    name="income"
+                    type="text"
+                    placeholder="Income - আয়"
+                />
+
+                <input
+                    className="input input-bordered text-center"
+                    name="loan"
+                    type="text"
+                    placeholder="Loan - ঋণ"
+                />
+
+                <input
+                    className="input input-bordered text-center"
+                    name="cash"
+                    type="text"
+                    placeholder="Cash - নগদ টাকা"
+                />
+
+                <input
+                    className="input input-bordered text-center"
+                    name="stock"
+                    type="text"
+                    placeholder="Stock - মজুদ"
+                />
+
+                <button className="btn btn-success">
                     Add
                 </button>
             </form>
