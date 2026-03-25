@@ -7,8 +7,8 @@ import useAxiosSecure from "../hooks/useAxiosSecure";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBinFill } from "react-icons/ri";
 
-import * as XLSX from "xlsx";   // ✅ Excel
-import { saveAs } from "file-saver"; // ✅ download
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -24,7 +24,6 @@ const Dashboard = () => {
     const [filter, setFilter] = useState("all");
     const [dark, setDark] = useState(false);
 
-    // ✅ Load Data
     const loadData = async () => {
         const res = await axiosSecure.get("/accounts");
         setData(res.data);
@@ -34,23 +33,39 @@ const Dashboard = () => {
         loadData();
     }, []);
 
-    // ✅ Delete
+    // ✅ DELETE with alert
     const handleDelete = async (id) => {
-        await axiosSecure.delete(`/accounts/${id}`);
-        loadData();
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        });
+
+        if (result.isConfirmed) {
+            await axiosSecure.delete(`/accounts/${id}`);
+            loadData();
+
+            Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success",
+            });
+        }
     };
 
-    // ✅ Edit
     const handleEdit = (item) => {
         setSelectedItem(item);
     };
 
-    // ✅ Safe number
     const getValue = (value) => {
         return isNaN(value) || value === "" ? value : parseFloat(value);
     };
 
-    // ✅ Update
+    // ✅ UPDATE with toast
     const handleUpdate = async (e) => {
         e.preventDefault();
         const form = e.target;
@@ -68,10 +83,16 @@ const Dashboard = () => {
         setSelectedItem(null);
         loadData();
 
-        Swal.fire("Updated!", "", "success");
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your Update has been saved",
+            showConfirmButton: false,
+            timer: 1500,
+        });
     };
 
-    // ✅ Excel Export
+    // Excel
     const exportToExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
@@ -89,20 +110,11 @@ const Dashboard = () => {
         saveAs(file, "accounts.xlsx");
     };
 
-    // ✅ PDF Export (FIXED)
+    // PDF
     const exportToPDF = () => {
         const doc = new jsPDF();
 
         doc.text("Accounts Report", 14, 10);
-
-        const tableColumn = [
-            "Date",
-            "Expense",
-            "Income",
-            "Loan",
-            "Cash",
-            "Stock",
-        ];
 
         const tableRows = data.map((item) => [
             new Date(item.date).toLocaleString(),
@@ -114,14 +126,13 @@ const Dashboard = () => {
         ]);
 
         autoTable(doc, {
-            head: [tableColumn],
+            head: [["Date", "Expense", "Income", "Loan", "Cash", "Stock"]],
             body: tableRows,
         });
 
         doc.save("accounts.pdf");
     };
 
-    // ✅ Filter
     const filteredData = data.filter((item) => {
         const matchSearch =
             item.date?.includes(search) ||
@@ -138,7 +149,6 @@ const Dashboard = () => {
         return matchSearch;
     });
 
-    // ✅ Chart Data
     const chartData = filteredData.map((item) => ({
         ...item,
         income: Number(item.income) || 0,
@@ -146,9 +156,8 @@ const Dashboard = () => {
     }));
 
     return (
-        <div className={dark ? "p-6 bg-black text-white min-h-screen" : "p-6"}>
+        <div className={dark ? "p-6 bg-black text-white " : "p-6"}>
 
-            {/* 🔍 SEARCH + BUTTON */}
             <div className="flex gap-3 mb-4 flex-wrap">
                 <input
                     type="text"
@@ -166,43 +175,32 @@ const Dashboard = () => {
                     <option value="month">This Month</option>
                 </select>
 
-                <button onClick={exportToExcel} className="btn btn-primary">
-                    Excel
-                </button>
+                <button onClick={exportToExcel} className="btn btn-primary">Excel</button>
+                <button onClick={exportToPDF} className="btn btn-secondary">PDF</button>
 
-                <button onClick={exportToPDF} className="btn btn-secondary">
-                    PDF
-                </button>
-
-                <button
-                    onClick={() => setDark(!dark)}
-                    className="btn btn-outline"
-                >
+                <button onClick={() => setDark(!dark)} className="btn btn-outline">
                     {dark ? "☀️ Light" : "🌙 Dark"}
                 </button>
             </div>
 
-            {/* Summary */}
             <SummaryCards data={chartData} />
 
-            {/* Charts */}
             <div className="grid md:grid-cols-2 gap-6">
                 <Chart data={chartData} />
                 <PieChartBox data={chartData} />
             </div>
 
-            {/* Table */}
             <div className={`overflow-x-auto mt-6 shadow rounded-xl ${dark ? "bg-gray-800" : "bg-white"}`}>
                 <table className="table table-zebra">
                     <thead>
                         <tr>
-                            <th>তারিখ</th>
-                            <th>খরচ</th>
-                            <th>আয়</th>
-                            <th>ঋণ</th>
-                            <th>নগদ</th>
-                            <th>মজুদ</th>
-                            <th>করণীয়</th>
+                            <th className="font-bold text-lg">তারিখ</th>
+                            <th className="font-bold text-lg">খরচ</th>
+                            <th className="font-bold text-lg">আয়</th>
+                            <th className="font-bold text-lg">ঋণ</th>
+                            <th className="font-bold text-lg">নগদ</th>
+                            <th className="font-bold text-lg">মজুদ</th>
+                            <th className="font-bold text-lg">করণীয়</th>
                         </tr>
                     </thead>
 
@@ -217,17 +215,11 @@ const Dashboard = () => {
                                 <td>{item.stock}</td>
 
                                 <td className="flex gap-2">
-                                    <button
-                                        onClick={() => handleDelete(item._id)}
-                                        className="btn btn-error btn-sm"
-                                    >
+                                    <button onClick={() => handleDelete(item._id)} className="btn btn-error btn-sm">
                                         <RiDeleteBinFill />
                                     </button>
 
-                                    <button
-                                        onClick={() => handleEdit(item)}
-                                        className="btn btn-info btn-sm"
-                                    >
+                                    <button onClick={() => handleEdit(item)} className="btn btn-info btn-sm">
                                         <FaEdit />
                                     </button>
                                 </td>
@@ -237,12 +229,9 @@ const Dashboard = () => {
                 </table>
             </div>
 
-            {/* Edit Form */}
             {selectedItem && (
                 <form onSubmit={handleUpdate} className="mt-6 space-x-2">
-                    <input
-                        name="date"
-                        type="datetime-local"
+                    <input name="date" type="datetime-local"
                         defaultValue={selectedItem.date?.slice(0, 16)}
                         className="input input-bordered"
                     />

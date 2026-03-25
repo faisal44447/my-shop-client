@@ -29,7 +29,7 @@ const AddAccount = () => {
 
     return (
         <div>
-            <h2 className="text-4xl text-center font-bold my-5">
+            <h2 className="text-4xl text-center  text-lg my-5">
                 Add Account
             </h2>
 
@@ -38,35 +38,35 @@ const AddAccount = () => {
                 className="space-y-3 grid grid-cols-1 border-4 border-black rounded-lg shadow-lg p-5 mx-auto w-1/2"
             >
                 <input
-                    className="input input-bordered text-center"
+                    className="input input-bordered  text-lg text-center"
                     name="date"
                     type="datetime-local"
                     required
                 />
 
                 <input
-                    className="input input-bordered text-center"
+                    className="input input-bordered  text-lg text-center"
                     name="expense"
                     type="text"
                     placeholder="Expense - খরচ"
                 />
 
                 <input
-                    className="input input-bordered text-center"
+                    className="input input-bordered  text-lg text-center"
                     name="income"
                     type="text"
                     placeholder="Income - আয়"
                 />
 
                 <input
-                    className="input input-bordered text-center"
+                    className="input input-bordered  text-lg text-center"
                     name="loan"
                     type="text"
                     placeholder="Loan - ঋণ"
                 />
 
                 <input
-                    className="input input-bordered text-center"
+                    className="input input-bordered  text-lg text-center"
                     name="cash"
                     type="text"
                     placeholder="Cash - নগদ টাকা"

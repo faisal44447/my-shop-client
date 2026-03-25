@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+
 import { RiDeleteBinFill } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import { MdBrowserUpdated } from "react-icons/md";
-
-
 
 const Accounts = () => {
     const [data, setData] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const axiosSecure = useAxiosSecure();
 
-    // load data
     const loadData = () => {
         axiosSecure.get("/accounts").then((res) => {
             setData(res.data);
@@ -22,24 +21,33 @@ const Accounts = () => {
         loadData();
     }, []);
 
-    // delete
-    const handleDelete = (id) => {
-        axiosSecure.delete(`/accounts/${id}`).then(() => {
-            loadData();
+    // ✅ DELETE with confirm
+    const handleDelete = async (id) => {
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
         });
+
+        if (result.isConfirmed) {
+            await axiosSecure.delete(`/accounts/${id}`);
+            loadData();
+
+            Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        }
     };
 
-    // edit
     const handleEdit = (item) => {
         setSelectedItem(item);
     };
 
-    // 🔥 function: text + number support
     const getValue = (value) => {
         return isNaN(value) || value === "" ? value : parseFloat(value);
     };
 
-    // update
+    // ✅ UPDATE alert
     const handleUpdate = (e) => {
         e.preventDefault();
         const form = e.target;
@@ -52,11 +60,18 @@ const Accounts = () => {
             stock: getValue(form.stock.value),
         };
 
-        axiosSecure
-            .patch(`/accounts/${selectedItem._id}`, updatedData)
+        axiosSecure.patch(`/accounts/${selectedItem._id}`, updatedData)
             .then(() => {
                 setSelectedItem(null);
                 loadData();
+
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Updated Successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
             });
     };
 
@@ -68,13 +83,13 @@ const Accounts = () => {
                 <table className="table table-xs table-zebra">
                     <thead>
                         <tr>
-                            <th>তারিখ</th>
-                            <th>খরচ</th>
-                            <th>আয়</th>
-                            <th>ঋণ</th>
-                            <th>নগদ</th>
-                            <th>মজুদ</th>
-                            <th>করণীয়</th>
+                            <th className="font-bold text-lg">তারিখ</th>
+                            <th className="font-bold text-lg">খরচ</th>
+                            <th className="font-bold text-lg">আয়</th>
+                            <th className="font-bold text-lg">ঋণ</th>
+                            <th className="font-bold text-lg">নগদ</th>
+                            <th className="font-bold text-lg">মজুদ</th>
+                            <th className="font-bold text-lg">করণীয়</th>
                         </tr>
                     </thead>
 
@@ -87,18 +102,13 @@ const Accounts = () => {
                                 <td>{item.loan}</td>
                                 <td>{item.cash}</td>
                                 <td>{item.stock}</td>
+
                                 <td className="flex gap-2">
-                                    <button
-                                        onClick={() => handleDelete(item._id)}
-                                        className="btn btn-xs btn-error"
-                                    >
+                                    <button onClick={() => handleDelete(item._id)} className="btn btn-xs btn-error">
                                         <RiDeleteBinFill />
                                     </button>
 
-                                    <button
-                                        onClick={() => handleEdit(item)}
-                                        className="btn btn-xs btn-info"
-                                    >
+                                    <button onClick={() => handleEdit(item)} className="btn btn-xs btn-info">
                                         <FaEdit />
                                     </button>
                                 </td>
@@ -108,37 +118,13 @@ const Accounts = () => {
                 </table>
             </div>
 
-            {/* EDIT FORM */}
             {selectedItem && (
-                <form
-                    onSubmit={handleUpdate}
-                    className="mt-6 flex flex-wrap gap-2"
-                >
-                    <input
-                        className="input input-bordered input-sm"
-                        name="expense"
-                        defaultValue={selectedItem.expense}
-                    />
-                    <input
-                        className="input input-bordered input-sm"
-                        name="income"
-                        defaultValue={selectedItem.income}
-                    />
-                    <input
-                        className="input input-bordered input-sm"
-                        name="loan"
-                        defaultValue={selectedItem.loan}
-                    />
-                    <input
-                        className="input input-bordered input-sm"
-                        name="cash"
-                        defaultValue={selectedItem.cash}
-                    />
-                    <input
-                        className="input input-bordered input-sm"
-                        name="stock"
-                        defaultValue={selectedItem.stock}
-                    />
+                <form onSubmit={handleUpdate} className="mt-6 flex flex-wrap gap-2">
+                    <input className="input input-bordered input-sm" name="expense" defaultValue={selectedItem.expense} />
+                    <input className="input input-bordered input-sm" name="income" defaultValue={selectedItem.income} />
+                    <input className="input input-bordered input-sm" name="loan" defaultValue={selectedItem.loan} />
+                    <input className="input input-bordered input-sm" name="cash" defaultValue={selectedItem.cash} />
+                    <input className="input input-bordered input-sm" name="stock" defaultValue={selectedItem.stock} />
 
                     <button className="btn btn-success btn-sm">
                         <MdBrowserUpdated />

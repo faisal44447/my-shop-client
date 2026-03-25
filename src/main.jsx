@@ -1,24 +1,28 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+
 import { RouterProvider } from "react-router-dom";
 import router from './routes/router';
 
-import { Helmet, HelmetProvider } from 'react-helmet-async'; // ✅ correct
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import AuthProvider from './providers/AuthProvider';
+import CartProvider from './providers/CartProvider';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>
 
       <Helmet>
-        <title>laivin Jewellers</title>
+        <title>Laivin Jewellers</title>
       </Helmet>
 
       <AuthProvider>
-        <RouterProvider router={router} />
+        <CartProvider> 
+          <RouterProvider router={router} />
+        </CartProvider>
       </AuthProvider>
 
     </HelmetProvider>
-  </StrictMode>,
+  </StrictMode>
 );
