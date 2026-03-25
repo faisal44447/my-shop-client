@@ -1,9 +1,27 @@
-import ShopBanner from ' ../../../src/assets/Shop Banner.jpg'; 
+import { Link } from 'react-router-dom';
+import ShopBanner from "../../../assets/Shop Banner.jpg";
 
 const Banner = () => {
     return (
-        <div className="w-full max-w-5xl mx-auto mt-5">
-           <img className="w-full  object-cover rounded-2xl shadow-5xl" src={ShopBanner} alt="Shop Banner" />
+        <div className="w-full max-w-5xl mx-auto mt-5 relative">
+
+            {/* IMAGE */}
+            <img
+                className="w-full object-cover rounded-2xl shadow-2xl"
+                src={ShopBanner}
+                alt="Shop Banner"
+            />
+
+            {/* BUTTON (RIGHT BOTTOM) */}
+            <Link
+                to="/shop"
+                className="absolute bottom-12 right-6"
+            >
+                <button className="btn-premium">
+                    Shop Now
+                </button>
+            </Link>
+
         </div>
     );
 };

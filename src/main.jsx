@@ -1,15 +1,24 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import {
-  RouterProvider,
-} from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import router from './routes/router';
+
+import { Helmet, HelmetProvider } from 'react-helmet-async'; // ✅ correct
+import AuthProvider from './providers/AuthProvider';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <div className='max-w-screen-xl mx-auto'>
-      <RouterProvider router={router} />
-    </div>
+    <HelmetProvider>
+
+      <Helmet>
+        <title>laivin Jewellers</title>
+      </Helmet>
+
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+
+    </HelmetProvider>
   </StrictMode>,
 );

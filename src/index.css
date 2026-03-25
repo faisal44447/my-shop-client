@@ -1,3 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* GLASS */
+.glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+}
+
+/* BUTTON */
+.btn-premium {
+    background: linear-gradient(135deg, #C9A96E, #f5d48c);
+    color: black;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-premium:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(201,169,110,0.6);
+}
+
+/* CARD */
+.card-glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 16px;
+    transition: 0.3s;
+}
+
+.card-glass:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}   
