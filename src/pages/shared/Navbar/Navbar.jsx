@@ -6,39 +6,43 @@ import Swal from "sweetalert2";
 
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext);
-    const { cart } = useContext(CartContext); // ✅ LIVE CART
+    const { cart } = useContext(CartContext);
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        logOut()
-            .then(() => {
-                Swal.fire("Logged out!", "", "success");
-                navigate("/");
-            })
-            .catch((error) => console.error(error));
+    const handleLogout = async () => {
+        await axios.post("http://localhost:5000/logout", {}, {
+            withCredentials: true,
+        });
+
+        logOut(); 
     };
 
     return (
-        <div className="flex justify-between items-center p-4 bg-black text-white">
+        <div className="flex justify-between items-center p-4 text-black font-bold glass">
 
+            {/* LOGO */}
             <h1 className="text-xl font-bold">
                 <Link to="/">Laivin Jewellers</Link>
             </h1>
 
+            {/* MENU */}
             <div className="flex gap-4 items-center">
 
-                <Link to="/">Home</Link>
+                <Link to="/home" onClick={() => window.scrollTo(0, 0)}>Home</Link>
+
                 <Link to="/products">Products</Link>
-                <Link to="/add-product">AddProduct</Link>
-                 <Link to="/dashboard">Dashboard</Link>
+                <Link to="/add-product">Add Product</Link>
+
+                <Link to="/dashboard">Dashboard</Link>
                 <Link to="/accounts">Accounts</Link>
                 <Link to="/add-account">Add Account</Link>
 
-                {/* ✅ LIVE CART COUNT */}
+                {/* CART */}
                 <Link to="/cart">
                     Cart ({cart.length}) 🛒
                 </Link>
 
+                {/* AUTH */}
                 {user ? (
                     <button onClick={handleLogout}>Logout</button>
                 ) : (

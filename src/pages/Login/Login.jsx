@@ -9,6 +9,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { CiRead } from "react-icons/ci";
 import SocialLogin from "../shared/SocialLogin";
+import axios from "axios"; // ✅ ADD THIS
 
 const Login = () => {
     const { signIn, resetPassword } = useContext(AuthContext);
@@ -23,17 +24,30 @@ const Login = () => {
         loadCaptchaEnginge(6);
     }, []);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
 
-        signIn(email, password)
-            .then(() => {
-                Swal.fire("Login Success!");
-                navigate(from, { replace: true });
-            })
-            .catch((err) => Swal.fire(err.message));
+        try {
+            // 🔥 Firebase Login
+            const result = await signIn(email, password);
+            const user = result.user;
+
+            // 🔥 JWT CREATE (VERY IMPORTANT)
+            await axios.post(
+                "http://localhost:5000/jwt",
+                { email: user.email },
+                { withCredentials: true }
+            );
+
+            Swal.fire("Login Success!", "", "success");
+
+            navigate(from, { replace: true });
+
+        } catch (err) {
+            Swal.fire(err.message);
+        }
     };
 
     // captcha
@@ -45,7 +59,7 @@ const Login = () => {
         }
     };
 
-    // 🔥 forgot password
+    // forgot password
     const handleForgotPassword = () => {
         const email = prompt("Enter your email:");
         if (!email) return;
@@ -88,6 +102,7 @@ const Login = () => {
                     </button>
 
                     <LoadCanvasTemplate />
+
                     <input
                         onBlur={handleCaptcha}
                         placeholder="Enter captcha"
@@ -104,7 +119,6 @@ const Login = () => {
 
                 </form>
 
-                {/* Social Login */}
                 <SocialLogin />
             </div>
         </div>

@@ -2,38 +2,52 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
+
 const Home = () => {
     const axiosSecure = useAxiosSecure();
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        axiosSecure.get("/products").then(res => {
-            setProducts(res.data);
-        });
-    }, []);
+        const loadProducts = async () => {
+            try {
+                const res = await axiosSecure.get("/products");
+                setProducts(res.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        loadProducts();
+    }, [axiosSecure]);
 
     return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Latest Jewellery</h2>
+        <div>
 
-            <div className="grid md:grid-cols-3 gap-5">
-                {products.slice(0, 6).map(item => (
-                    <div key={item._id} className="bg-white shadow rounded-xl p-4">
+            <div className="p-6">
+                <h2 className="text-2xl font-bold mb-4">Latest Jewellery</h2>
 
-                        <img src={item.image} className="h-40 w-full object-cover rounded" />
+                <div className="grid md:grid-cols-3 gap-5">
+                    {products.slice(0, 6).map(item => (
+                        <div key={item._id} className="bg-white shadow rounded-xl p-4">
 
-                        <h3 className="font-bold mt-2">{item.name}</h3>
+                            <img
+                                src={item.image}
+                                className="h-40 w-full object-cover rounded"
+                            />
 
-                        <p>💰 {item.price} ৳</p>
-                        <p>🟡 {item.carat} Carat</p>
+                            <h3 className="font-bold mt-2">{item.name}</h3>
 
-                        <Link to={`/product/${item._id}`}>
-                            <button className="btn btn-sm btn-primary mt-2">
-                                View Details
-                            </button>
-                        </Link>
-                    </div>
-                ))}
+                            <p>💰 {item.price} ৳</p>
+                            <p>🟡 {item.carat} Carat</p>
+
+                            <Link to={`/product/${item._id}`}>
+                                <button className="btn btn-sm btn-primary mt-2">
+                                    View Details
+                                </button>
+                            </Link>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

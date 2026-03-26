@@ -14,11 +14,11 @@ const Banner = () => {
 
             {/* BUTTON (RIGHT BOTTOM) */}
             <Link
-                to="/shop"
+                to="/products"
                 className="absolute bottom-12 right-6"
             >
                 <button className="btn-premium">
-                    Shop Now
+                    View Products
                 </button>
             </Link>
 
